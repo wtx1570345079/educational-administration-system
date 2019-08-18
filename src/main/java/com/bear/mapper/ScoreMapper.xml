@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.bear.mapper.ScoreMapper">
+  
+  <!-- 分页 -->
+  <resultMap type="Score" id="mymap">
+  <id column="id" property="id"/>
+  <result column="studentid" property="studentid"/>
+  <result column="score" property="score"/>
+  <result column="courseid" property="courseid"/>
+   <association property="student" javaType="com.bear.pojo.Student">
+   <id column="sid" property="id"/>
+   <result column="number" property="number"/>
+   <result column="sname" property="name"/>
+   </association>
+   <association property="course" javaType="com.bear.pojo.Course">
+   <id column="cid" property="id"/>
+   <result column="cname" property="name"/>
+   </association>
+  </resultMap>
+  <select id="selCurPageScore" resultMap="mymap" >
+   SELECT  sc.id id,sc.studentid,sc.score,sc.courseid,s.id sid,s.number number,s.name sname,c.id cid,c.name cname
+   FROM score sc LEFT JOIN student s ON s.id=sc.studentid LEFT JOIN course c ON c.id=sc.courseid  
+   <where>
+     <!-- 有内容才会生成where   有coursename才会生成语句-->
+      <if test="coursename!='' and coursename!=null">
+        and  c.name=#{coursename}
+      </if>
+   </where>
+   limit #{startPage},#{pageSize};
+  </select>
+  
+  <!-- 查询全部 -->
+  <select id="selAll" resultType="int">
+  select count(*) from score;
+  </select>
+  
+  <!-- 修改分数 -->
+   <update id="updateScore" >
+   update score set score=#{score} where id=#{id};
+   </update>
+   
+   <!-- 删除成绩 -->
+  <delete id="deleteScore" parameterType="int">
+  delete from score where id=#{0}
+  </delete>
+  
+  <!--  查询分数  根据 studentid   courseid -->
+  <select id="selBySid_Cid" resultType="Score" >
+  select * from  score where studentid=#{studentid} and courseid=#{courseid};
+  </select>
+  </mapper>

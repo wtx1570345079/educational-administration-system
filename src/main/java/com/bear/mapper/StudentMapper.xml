@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.bear.mapper.StudentMapper">
+  
+  <!--  查询全部  -->
+  <select id="selAll" resultType="int">
+  select count(*) from student;
+  </select>
+  
+  <!--  查询当前页的数据  -->
+   <select id="showCurpage" parameterType="int" resultType="Student">
+    select * from student limit #{0},#{1};
+  </select>
+  <!-- 增删改 默认 -->
+  <update id="updateStudent" parameterType="Student">
+   UPDATE student SET number=#{number},NAME=#{name},sex=#{sex},phone=#{phone} WHERE id=#{id}
+  </update>
+  
+  <!-- 删除学生 -->
+  <delete id="deleteStudnet" parameterType="int">
+  delete from student where id=#{0};
+  </delete>
+  
+  <!-- 添加学生 -->
+  <insert id="addStudent" parameterType="Student">
+   INSERT INTO student VALUES(DEFAULT,#{number},#{name},#{sex},#{phone});
+  </insert>
+  <!-- 根据学生id查询   学生对象 -->
+  <select id="selById" parameterType="int" resultType="Student">
+  select * from student where id=#{0}
+  </select>
+  
+   <!-- 学生查看自己的成绩 -->
+   <resultMap type="Score" id="stuscoremap">
+    <id column="id" property="id"/>
+    <result column="score" property="score"/>
+
+    <association property="student" javaType="com.bear.pojo.Student" 
+     select="com.bear.mapper.StudentMapper.selById" column="studentid">
+    </association>
+     <association property="course" javaType="com.bear.pojo.Course" 
+     select="com.bear.mapper.CourseMapper.selCourseById" column="courseid">
+    </association>
+   </resultMap>
+  <select id="selStuScore" resultMap="stuscoremap" >
+   select sc.id id,sc.studentid,score,courseid
+   from score sc where studentid=#{stuid}  limit #{startPage},#{pageSize};
+  </select>
+  
+  
+  <!-- 跟据学生的学号和姓名查询出学生 -->
+  <select id="selByNumber_Name" resultType="Student" >
+  select * from student where number=#{number} and name=#{name};
+  </select>
+  
+  </mapper>

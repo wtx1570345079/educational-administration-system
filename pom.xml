@@ -1,0 +1,160 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.bear</groupId>
+  <artifactId>easyui</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
+  	<!-- 
+	Exception sending context destroyed event to listener instance of class org.springframework.web.context.ContextLoaderListener
+	错误原因为工作期间多个编写程序软件同一个项目共用一个Tomcat，导致里面配置冲突。
+	 -->
+	<!-- 统一版本号 Spring Springmvc使用的都是4.1.6的版本 -->
+	<properties>
+		<servlet-version>3.0.1</servlet-version>
+		<jsp-version>2.2</jsp-version>
+		<jstl-version>1.2</jstl-version>
+		<spring-version>4.1.6.RELEASE</spring-version>
+		<aspectjweaver-version>1.8.6</aspectjweaver-version>
+		<mybatis-version>3.2.7</mybatis-version>
+		<mybatis-spring-version>1.2.3</mybatis-spring-version>
+		<log4j-version>1.2.17</log4j-version>
+		<mysql-connector-java-version>5.1.38</mysql-connector-java-version>
+		<jackson-version>2.4.1</jackson-version>
+		<commons-fileupload-version>1.3.1</commons-fileupload-version>
+		<commons-io-version>2.2</commons-io-version>
+	</properties>
+	
+	<dependencies>
+		<!-- 先导入javaee 三个架包 -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${servlet-version}</version>
+			<!-- 让这个jar包只在编译时起作用 -->
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>${jsp-version}</version>
+			<!-- 让这个jar包只在编译时起作用 -->
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>${jstl-version}</version>
+		</dependency>
+		<!-- spring -->
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${aspectjweaver-version}</version>
+		</dependency>
+        <!-- mybatis -->
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>${mybatis-version}</version>
+		</dependency>
+		<!-- mybatis和spring整合 -->
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>${mybatis-spring-version}</version>
+		</dependency>
+		<!-- 日志包 -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j-version}</version>
+		</dependency>
+		<!-- mysql 驱动类 -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql-connector-java-version}</version>
+		</dependency>
+		<!-- jackson springmvc 转换为json字符串的时候需要的包-->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson-version}</version>
+		</dependency>
+		<!-- apache 文件上传 下载需要的包-->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>${commons-fileupload-version}</version>
+		</dependency>
+	<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+	<dependency>
+		<groupId>commons-io</groupId>
+		<artifactId>commons-io</artifactId>
+		<version>${commons-io-version}</version>
+	</dependency>
+	</dependencies>
+		<!-- 配置tomcat插件 -->
+		<!-- 
+						配置资源拷贝插件： 
+		maven默认指挥吧src/main/resources里面的非.java文件编译到classes中
+		如果希望src/main/java下的文件也被编译到classes中，在pom.xml中配置resources标签
+		否则报异常，Invalid bound statement (not found): com.bear.mapper.UserMapper.selAll
+	          除了转发是从服务器发起的，其他都是从浏览器发起的
+	         重定向由浏览器发起的请求，代码中的“/”表示的当前路径就应该表示的是webapps的根目录
+	         转发由服务器发起的请求，可理解为“/”表示当前目录是Eclipse中项目的WebContent(项目名)的根目录
+		 -->
+	<build>
+	<!-- 让资源文件全都能够被编译 -->
+	   <resources>
+	   <resource>
+	   <directory>src/main/java</directory>
+	   <includes>
+	    <!-- 代表包下的所有.xml文件打入jar -->
+	   <include>**/*.xml</include>
+	   </includes>
+	   </resource>
+	   
+	   <resource>
+	   <directory>src/main/resources</directory>
+	   <includes>
+	   <include>**/*.xml</include>
+	   <include>**/*.properties</include>
+	   </includes>
+	   </resource>
+	   </resources>
+	   
+	   <plugins>
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<!-- 控制 tomcat端口号  可以方便修改-->
+					<port>80</port>
+					<!-- 项目发布到 tomcat 后的名称 -->
+					 <!-- / 相当于把项目发布名称为 ROOT  localhost:8080访问的是ROOT项目-->
+					  <!-- /abc  项目发布后叫abc-->
+					<path>/easyui</path>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.bear.mapper.TeacherMapper">
+  <!-- 总记录数 -->
+  <select id="selAll" resultType="int">
+  select count(*) from teacher;
+  </select>
+  <!-- 每一页的数据   resultmap联合查询方式-->
+   <resultMap type="Teacher" id="teamap">
+   <id column="id" property="id"/>
+   <result column="name" property="name"/>
+   <result column="sex" property="sex"/>
+   <result column="number" property="number"/>
+   <result column="phone" property="phone"/>
+   <association property="course" javaType="com.bear.pojo.Course">
+	 <id column="c_id" property="id"/>
+	 <result column="cname" property="name"/>
+   </association>
+   </resultMap>
+  <select id="selCurpageData" resultMap="teamap">
+   SELECT t.id id,t.name name,t.sex sex,t.phone phone,t.number number,c.id c_id,c.name cname
+   FROM teacher t LEFT JOIN  course_teacher ct ON t.id=ct.teacherid LEFT JOIN course c ON c.id=ct.courseid 
+   limit #{startPage},#{pageSize};
+  </select>
+  
+  
+ <!--  resultmap使用联合查询方式   -->
+<!--   <resultMap type="Teacher" id="teamap">
+<id column="id" property="id"/>
+<result column="tname" property="name"/>
+<collection property="list" ofType="Student">
+<id column="sid" property="id"/>
+<result column="age" property="age"/>
+<result column="sname" property="name"/>
+<result column="tid" property="tid"/>
+</collection>
+</resultMap>
+<select id="selAll2" resultMap="teamap">
+SELECT t.id id,t.name tname,s.id sid,s.age age,s.name sname,s.tid tid FROM teacher t LEFT JOIN student s ON t.id=s.tid;
+</select>   -->
+  
+  
+    <!-- 修改教师 -->
+  <update id="updateTeacher" parameterType="Teacher">
+   <!-- 修改教师的基本信息 -->
+   update teacher set number=#{number},name=#{name},sex=#{sex},phone=#{phone} where id=#{id};
+  </update>
+  
+   <!-- 修改关联表中的courseid  当id存在的时候 -->
+   <update id="updateCourse_Teacher" >
+   update course_teacher set courseid=#{courseid} where courseid=#{oldcid};
+   </update>
+  
+  <!-- 删除教师 -->
+  <delete id="deleteTeacher" parameterType="int">
+  delete from teacher where id=#{0};
+  </delete>
+  
+  <!-- 删除教师_课程的关联表 -->
+  <delete id="deleteCourse_Teacher" parameterType="int" >
+  delete from course_teacher where teacherid=#{0};
+  </delete>
+  
+   <!-- 添加教师  基本信息-->
+  <insert id="addTeacher" parameterType="Teacher">
+  insert into teacher values(default,#{number},#{name},#{sex},#{phone});
+  </insert>
+  
+  <!-- 根据老师的工号查询老师的id值 -->
+  <select id="selByTeacherNumber" parameterType="Teacher" resultType="int">
+   select id from teacher where number=#{number};
+  </select>
+  <!--  添加关联表的信息-->
+   <insert id="addCourse_Teacher" >
+   insert into course_teacher values(default,#{courseid},#{teacherid});
+   </insert>
+   <!-- 根据id 查询教师 -->
+   <select id="selById" resultType="Teacher" parameterType="int">
+   select * from teacher where id=#{0};
+   </select>
+   
+     <!-- 查询出所教课程的没有成绩的学生  -->
+     <resultMap type="Student" id="scoremap">
+      <id column="id" property="id"/>
+      <result column="number" property="number"/>
+      <result column="name" property="name"/>
+      <!-- <association property="score" javaType="com.bear.pojo.Score"
+      select="com.bear.mapper.ScoreMapper.selBySid_Cid" column="studentid=id,courseid=courseid">
+      </association> -->
+     </resultMap>
+    <select id="selTeachStudentScore" resultMap="scoremap">
+    SELECT * FROM student s  WHERE s.id NOT IN(
+    SELECT  s.id
+    FROM student s 
+    LEFT JOIN score sc ON s.id=sc.studentid
+    LEFT JOIN course_teacher ct ON ct.courseid=sc.courseid WHERE ct.teacherid=#{teacherid}
+    )  limit #{startPage},#{pageSize};
+    </select>
+     
+     <!--  查询老师  根据 number 和 name -->
+     <select id="selNumber_Name" resultType="Teacher">
+      select * from teacher where number=#{number} and name=#{name};
+     </select>
+     
+     <!-- 添加学生成绩 -->
+     <insert id="addStudnetScore" parameterType="Score">
+     insert into score values(default,#{studentid},#{score},#{courseid});
+     </insert>
+     
+     <!-- 根据教师id  查询出课程id -->
+     <select id="selCourseId" parameterType="int" resultType="int">
+     select courseid from course_teacher where teacherid=#{0};
+     </select>
+  </mapper>

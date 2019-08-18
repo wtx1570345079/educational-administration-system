@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.bear.mapper.CourseMapper"> 
+    <!-- 查询出未被安排的课程  和 查询出自己的课程 -->
+  <select id="selAsignedCourse" resultType="Course">
+    SELECT * FROM course WHERE id NOT IN(
+     SELECT c.id  FROM course c,course_teacher ct  WHERE  c.id=ct.courseid
+    );
+   </select>
+   
+   <!-- 查询总记录数 -->
+   <select id="selAll" resultType="int">
+     select count(*) from course;
+   </select>
+   <!-- 查询当前页课程 -->
+   <select id="selCurpageCourse" resultType="Course" >
+   select * from course limit #{startPage},#{pageSize};
+   </select>
+   
+   <!--  根据id查询课程 -->
+   <select id="selCourseById" parameterType="int" resultType="Course">
+   select * from course where id=#{0};
+   </select>
+   
+   <!--添加课程  -->
+   <insert id="addCourse" parameterType="Course">
+   insert into course  values(default,#{name});
+   </insert>
+   
+   <!--查询总共的课程  -->
+   <select id="selAllCourse" resultType="Course">
+   select * from  course;
+   </select>
+  </mapper>

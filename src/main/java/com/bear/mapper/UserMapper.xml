@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+  <mapper namespace="com.bear.mapper.UserMapper">
+  
+  <select id="selByName_Pwd" parameterType="User" resultType="User">
+   select * from user where username=#{username} and password=#{password}
+  </select>
+
+
+    <!-- 添加用户 学生-->
+    
+    <insert id="addStudent" parameterType="Student">
+    insert into user values(default,#{number},'123456',#{name},2);
+    </insert>
+    
+    <!--删除用户  学生  -->
+    <delete id="delStudent" parameterType="Student">
+    delete from user where username=#{number};
+    </delete>
+    
+    <!-- 修改学生-->
+    <update id="updateStudent" parameterType="Student">
+    update user set name=#{name} where username=#{number};
+    </update>
+    
+    <!-- 添加用户 教师   -->
+    <insert id="addTeacher" parameterType="Teacher">
+     insert into user  values(default,#{number},'123456',#{name},3);
+    </insert>
+    
+     <!--删除用户  教师  -->
+    <delete id="delTeacher" parameterType="Teacher">
+    delete from user where username=#{number};
+    </delete>
+    
+    <!-- 修改教师-->
+    <update id="updateTeacher" parameterType="Teacher">
+    update user set name=#{name} where username=#{number};
+    </update>
+    
+    <!--查询学生的id   通过user的id查询学生 -->
+     <select id="selByUserId" parameterType="int" resultType="User">
+     
+     select * from user where id=#{0};
+     </select>
+    
+  </mapper>

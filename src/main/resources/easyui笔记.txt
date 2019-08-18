@@ -1,0 +1,53 @@
+	1.EasyUI是前端框架    （能复制绝不要手写）
+	2.前端框架：封装了大量css,封装大量js
+	3.使用前端框架：给标签clss属性
+	4.easyui中需要注意的地方：
+	（1）data-options 属性定义easyui属性的
+	（2）如果easyui提供的属性和html标签属性相同，可以把这个属性不写在data-options中
+	（3）每一个效果使用纯标签方式或者使用标签结合js方式
+   		 如果效果是静态的建议使用纯html标签方式  （动静指的是数据的来源）
+    	如果效果是动态 建议使用html结合js方式
+          （4）在easyui中所有脚本功能语法：  效果包括(属性，事件，方法)
+            1） 如果该（效果）组件是abc，控制abc的语法：
+      			$("jquery选择器获取到abc").abc({
+               		属性名：值,
+               		事件：function([参数]){}
+            		 })
+            2）如果该（效果）组件是abc，控制abc的方法语法：
+       		$("jquery选择器获取到abc").abc("方法名"); //调用方法
+       		$(jquery选择器获取到abc").abc("方法名","参数"); //调用方法
+          （5）每个组件可能会有继承关系
+    5.EasyUI适用于后台管理界面，不使用于前台项目页面
+                   优点：处理服务器传递过来json数据能力比较强
+                
+  转发和重定向的区别：          
+  如果传递给HttpServletResponse.sendRedirect 方法的相对URL以“/”开头，它是相对于整个WEB站点的根目录；
+  如果创建RequestDispatcher对象时指定的相对URL以“/”开头，它是相对于当前WEB应用程序的根目录。、
+ 
+ url 和uri的区别
+ URI，是uniform resource identifier，统一资源标识符，用来唯一的标识一个资源。   相对路径   
+ 而URL是uniform resource locator，统一资源定位器，它是一种具体的URI，   完整的资源路径
+ 即URL可以用来标识一个资源，而且还指明了如何locate这个资源。  
+          
+    
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

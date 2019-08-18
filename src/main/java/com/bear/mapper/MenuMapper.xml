@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+  <mapper namespace="com.bear.mapper.MenuMapper">
+  
+   <select id="selByPid" resultType="Menu" parameterType="int">
+   select * from menu where pid=#{0};
+  </select>
+   <select id="selStuByPid" resultType="StuMenu" parameterType="int">
+   select * from stumenu where pid=#{0};
+  </select>
+  <select id="selTeaByPid" resultType="TeaMenu" parameterType="int">
+   select * from teamenu where pid=#{0};
+  </select>
+  
+  <!-- resultMap(n+1)方式不使用automapping 特性，而是手动配置映射关系   -->
+  <resultMap type="Menu" id="mymap">
+  <!-- 主键使用id标签配置映射关系  -->
+  <id column="id" property="id"/>
+  <result column="name" property="name"/>
+  <result column="pid" property="pid"/>
+  <!-- 关联集合对象   oftype:代表集合的泛型    column  表示作为select的参数值-->
+  <collection property="children" ofType="Menu" select="com.bear.mapper.MenuMapper.selByPid" column="id"></collection>
+  </resultMap>
+  <select id="selAll" resultMap="mymap">
+  select * from menu where pid=0;
+  </select>
+  
+  <!-- 学生菜单 -->
+  <resultMap type="StuMenu" id="stumap">
+  <!-- 主键使用id标签配置映射关系  -->
+  <id column="id" property="id"/>
+  <result column="name" property="name"/>
+  <result column="pid" property="pid"/>
+  <!-- 关联集合对象   oftype:代表集合的泛型    column  表示作为select的参数值-->
+  <collection property="children" ofType="StuMenu" select="com.bear.mapper.MenuMapper.selStuByPid" column="id"></collection>
+  </resultMap>
+  <select id="selAllstu" resultMap="stumap">
+  select * from stumenu where pid=0;
+  </select>
+  
+  <!-- 教师菜单 -->
+  <resultMap type="TeaMenu" id="teamap">
+  <!-- 主键使用id标签配置映射关系  -->
+  <id column="id" property="id"/>
+  <result column="name" property="name"/>
+  <result column="pid" property="pid"/>
+  <!-- 关联集合对象   oftype:代表集合的泛型    column  表示作为select的参数值-->
+  <collection property="children" ofType="TeaMenu" select="com.bear.mapper.MenuMapper.selTeaByPid" column="id"></collection>
+  </resultMap>
+  <select id="selAlltea" resultMap="teamap">
+  select * from teamenu where pid=0;
+  </select>
+  
+  
+  <!--  resultmap使用联合查询方式   -->
+<!--   <resultMap type="Teacher" id="teamap">
+<id column="id" property="id"/>
+<result column="tname" property="name"/>
+<collection property="list" ofType="Student">
+<id column="sid" property="id"/>
+<result column="age" property="age"/>
+<result column="sname" property="name"/>
+<result column="tid" property="tid"/>
+</collection>
+</resultMap>
+<select id="selAll2" resultMap="teamap">
+SELECT t.id id,t.name tname,s.id sid,s.age age,s.name sname,s.tid tid FROM teacher t LEFT JOIN student s ON t.id=s.tid;
+</select>   -->
+  </mapper>

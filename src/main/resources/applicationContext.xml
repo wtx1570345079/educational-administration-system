@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-4.1.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx-4.1.xsd"
+    default-autowire="byName">
+    
+    <!-- 扫描实现包-->
+    <context:component-scan base-package="com.bear.service.impl"></context:component-scan>
+    <aop:aspectj-autoproxy proxy-target-class="true"></aop:aspectj-autoproxy>
+    <!-- 扫描外部资源文件 -->
+    <context:property-placeholder location="classpath:db.properties"/>
+    <!-- 创建数据源对象 dataSource -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <property name="url" value="${jdbc.url}"></property>
+    <property name="username" value="${jdbc.username}"></property>
+    <property name="password" value="${jdbc.password}"></property>
+    <property name="driverClassName" value="${jdbc.driver}"></property>
+    </bean>
+    
+    <!-- 创建sqlsessionFactory对象 -->
+    <bean id="factory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dataSource"></property>
+    <property name="typeAliasesPackage" value="com.bear.pojo"></property>
+    </bean>
+    <!-- 扫描器   扫描映射文件和接口 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+    <property name="basePackage" value="com.bear.mapper"></property>
+    <property name="sqlSessionFactoryBeanName" value="factory"></property>
+    </bean>
+    
+    <!-- 事务管理器 -->
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="dataSource"></property>
+    </bean>
+    
+    <!-- 声明式事务    基于通知-->
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+    <tx:attributes>
+    <tx:method name="ins*"/>
+    <tx:method name="del*"/>
+    <tx:method name="upd*"/>
+    <tx:method name="*" read-only="true"/>
+    </tx:attributes>
+    </tx:advice>
+    
+    <!-- 面向切面编程 配置切面 切点(serviceImpl实现类的方法) -->
+    <aop:config>
+    <aop:pointcut expression="execution(* com.bear.service.impl.*.*(..))" id="mypoint"/>
+    <aop:advisor advice-ref="txAdvice" pointcut-ref="mypoint"/>
+    </aop:config>
+    
+    </beans>
+    
+    
